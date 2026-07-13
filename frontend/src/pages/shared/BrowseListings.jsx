@@ -7,7 +7,7 @@ import compatibilityService from '../../services/compatibility.service';
 import ListingCard from '../../components/listing/ListingCard';
 import ListingFilters from '../../components/listing/ListingFilters';
 import Pagination from '../../components/common/Pagination';
-import LoadingSpinner from '../../components/common/LoadingSpinner';
+import SkeletonListingCard from '../../components/listing/SkeletonListingCard';
 import ErrorMessage from '../../components/common/ErrorMessage';
 import EmptyState from '../../components/common/EmptyState';
 import { DEFAULT_PAGE_LIMIT } from '../../config/constants';
@@ -92,7 +92,11 @@ export default function BrowseListings({ hideLayout = false }) {
 
       <ListingFilters filters={filters} onChange={setFilters} onReset={handleReset} />
 
-      {loading ? <LoadingSpinner /> : error ? (
+      {loading ? (
+        <div className="listing-grid">
+          {[...Array(6)].map((_, i) => <SkeletonListingCard key={i} />)}
+        </div>
+      ) : error ? (
         <ErrorMessage message={error} onRetry={fetchListings} />
       ) : listings.length === 0 ? (
         <EmptyState

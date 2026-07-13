@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import NotificationBell from '../components/common/NotificationBell';
+import BottomNav from '../components/layout/BottomNav';
+import { LayoutDashboard, UserPlus, LogIn, LogOut } from 'lucide-react';
 
 export default function MainLayout({ children }) {
   const { isAuthenticated, user, logout } = useAuth();
@@ -28,7 +30,10 @@ export default function MainLayout({ children }) {
       <header id="siteHeader">
         <div className="wrap">
           <nav>
-            <Link className="logo" to="/"><span className="mark"></span>HomeSync</Link>
+            <Link className="logo" to="/">
+              <img src="/logo.png" alt="HomeSync Logo" className="logo-img" />
+              <span>HomeSync</span>
+            </Link>
             <div className="nav-links">
               <Link to="/">Home</Link>
               <Link to="/listings">Rooms</Link>
@@ -38,13 +43,21 @@ export default function MainLayout({ children }) {
               {isAuthenticated ? (
                 <>
                   <NotificationBell />
-                  <Link className="btn btn-primary" to={`/${user?.role?.toLowerCase()}/dashboard`}>Dashboard</Link>
-                  <button className="btn btn-ghost" onClick={handleLogout}>Logout</button>
+                  <Link className="btn btn-primary" to={`/${user?.role?.toLowerCase()}/dashboard`}>
+                    <LayoutDashboard size={16} /> Dashboard
+                  </Link>
+                  <button className="btn btn-ghost" onClick={handleLogout}>
+                    <LogOut size={16} /> Logout
+                  </button>
                 </>
               ) : (
                 <>
-                  <Link className="btn btn-ghost" to="/login">Sign in</Link>
-                  <Link className="btn btn-primary" to="/register">Register</Link>
+                  <Link className="btn btn-ghost" to="/login">
+                    <LogIn size={16} /> Sign in
+                  </Link>
+                  <Link className="btn btn-primary" to="/register">
+                    <UserPlus size={16} /> Register
+                  </Link>
                 </>
               )}
             </div>
@@ -64,8 +77,9 @@ export default function MainLayout({ children }) {
         <div className="wrap">
           <div className="foot-grid">
             <div>
-              <Link className="logo" to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 9, fontSize: 20, fontWeight: 700, textDecoration: 'none' }}>
-                <span className="mark"></span>HomeSync
+              <Link className="logo" to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 9, textDecoration: 'none' }}>
+                <img src="/logo.png" alt="HomeSync Logo" className="logo-img footer-logo" />
+                <span>HomeSync</span>
               </Link>
               <p className="foot-desc" style={{ marginTop: 14 }}>
                 HomeSync pairs verified rentals with flatmates who actually fit your budget, habits, and daily rhythm.
@@ -107,6 +121,8 @@ export default function MainLayout({ children }) {
           </div>
         </div>
       </footer>
+      
+      <BottomNav />
     </div>
   );
 }

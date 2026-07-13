@@ -4,7 +4,7 @@ import adminService from '../../services/admin.service';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ErrorMessage from '../../components/common/ErrorMessage';
 import StatCard from '../../components/common/StatCard';
-import { Users, Home, Mail, TrendingUp, Activity, Shield } from 'lucide-react';
+import { Users, Home, Mail, TrendingUp, Activity, Shield, CheckCircle, Handshake, MessageCircle } from 'lucide-react';
 
 /* ── Animated Bar Chart ───────────────────────────────────────────── */
 function BarChart({ bars }) {
@@ -97,12 +97,12 @@ function ProgressRow({ label, value, total, color }) {
 /* ── Activity Feed Skeleton ───────────────────────────────────────── */
 function ActivityFeed({ stats }) {
   const items = [
-    { icon: '👥', label: 'Total registered users', value: stats?.users?.total, color: '#3b82f6' },
-    { icon: '🏠', label: 'Listings on platform', value: stats?.listings?.total, color: '#8b5cf6' },
-    { icon: '✅', label: 'Rooms successfully filled', value: stats?.listings?.filled, color: '#10b981' },
-    { icon: '📨', label: 'Interests expressed', value: stats?.interests?.total, color: '#f59e0b' },
-    { icon: '🤝', label: 'Accepted connections', value: stats?.interests?.accepted, color: '#06b6d4' },
-    { icon: '💬', label: 'Total chats opened', value: stats?.chats?.total, color: '#ec4899' },
+    { icon: <Users size={16} />, label: 'Total registered users', value: stats?.users?.total, color: '#3b82f6' },
+    { icon: <Home size={16} />, label: 'Listings on platform', value: stats?.listings?.total, color: '#8b5cf6' },
+    { icon: <CheckCircle size={16} />, label: 'Rooms successfully filled', value: stats?.listings?.filled, color: '#10b981' },
+    { icon: <Mail size={16} />, label: 'Interests expressed', value: stats?.interests?.total, color: '#f59e0b' },
+    { icon: <Handshake size={16} />, label: 'Accepted connections', value: stats?.interests?.accepted, color: '#06b6d4' },
+    { icon: <MessageCircle size={16} />, label: 'Total chats opened', value: stats?.chats?.total, color: '#ec4899' },
   ];
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
@@ -111,9 +111,9 @@ function ActivityFeed({ stats }) {
           display: 'flex', alignItems: 'center', gap: 14,
           padding: '14px 0', borderBottom: i < items.length - 1 ? '1px solid var(--divider)' : 'none'
         }}>
-          <div style={{ width: 38, height: 38, borderRadius: 12, background: `${item.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>
-            {item.icon}
-          </div>
+            <div style={{ width: 34, height: 34, borderRadius: 10, background: `${item.color}15`, color: item.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              {item.icon}
+            </div>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 14, color: 'var(--text-secondary)' }}>{item.label}</div>
           </div>

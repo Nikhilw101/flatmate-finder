@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import listingService from '../services/listing.service';
 import ListingCard from '../components/listing/ListingCard';
+import { MapPin } from 'lucide-react';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -61,9 +62,7 @@ export default function Home() {
                 boxShadow: '0 8px 16px rgba(0,0,0,0.08)',
                 marginTop: 8
               }}>
-                <video autoPlay loop muted playsInline style={{ width: '100%', height: '100%', objectFit: 'cover' }}>
-                  <source src="https://assets.mixkit.co/videos/preview/mixkit-friends-toasting-with-beer-glasses-438-small.mp4" type="video/mp4" />
-                </video>
+                <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=150&q=80" alt="Friends" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </span>
             </h1>
             <p className="hero-sub">HomeSync pairs verified rentals with flatmates who actually fit your budget, habits, and daily rhythm — scored by AI, decided by you.</p>
@@ -96,7 +95,7 @@ export default function Home() {
 
           <div className="hero-visual">
             <div className="float-card fc-main">
-              <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&auto=format&fit=crop&q=70" alt="Bright modern apartment living room" />
+              <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&auto=format&fit=crop&q=70" alt="Bright modern apartment living room" />
               <div className="fc-body">
                 <div className="fc-price">₹22,000 <span>/ month</span></div>
                 <div className="fc-loc">
@@ -244,22 +243,34 @@ export default function Home() {
             <Link className="city-card reveal" to="/listings?location=Bengaluru">
               <img src="https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=500&auto=format&fit=crop&q=70" alt="Bengaluru skyline" />
               <div className="city-overlay"></div>
-              <div className="city-info"><div className="city-name">Bengaluru</div><div className="city-count">Active Area</div></div>
+              <div className="city-info">
+                <div className="city-name" style={{ display: 'flex', alignItems: 'center', gap: 6 }}><MapPin size={18} /> Bengaluru</div>
+                <div className="city-count">Active Area</div>
+              </div>
             </Link>
             <Link className="city-card reveal" to="/listings?location=Mumbai">
               <img src="https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=500&auto=format&fit=crop&q=70" alt="Mumbai coastline" />
               <div className="city-overlay"></div>
-              <div className="city-info"><div className="city-name">Mumbai</div><div className="city-count">Active Area</div></div>
+              <div className="city-info">
+                <div className="city-name" style={{ display: 'flex', alignItems: 'center', gap: 6 }}><MapPin size={18} /> Mumbai</div>
+                <div className="city-count">Active Area</div>
+              </div>
             </Link>
             <Link className="city-card reveal" to="/listings?location=Delhi">
               <img src="https://images.unsplash.com/photo-1587474260584-136574528ed5?w=500&auto=format&fit=crop&q=70" alt="Delhi city view" />
               <div className="city-overlay"></div>
-              <div className="city-info"><div className="city-name">Delhi NCR</div><div className="city-count">Active Area</div></div>
+              <div className="city-info">
+                <div className="city-name" style={{ display: 'flex', alignItems: 'center', gap: 6 }}><MapPin size={18} /> Delhi NCR</div>
+                <div className="city-count">Active Area</div>
+              </div>
             </Link>
             <Link className="city-card reveal" to="/listings?location=Pune">
-              <img src="https://images.unsplash.com/photo-1608181831718-c9ffd8630532?w=500&auto=format&fit=crop&q=70" alt="Pune street view" />
+              <img src="https://images.unsplash.com/photo-1595928642581-f50f4f3453a5?w=500&auto=format&fit=crop&q=70" alt="Pune street view" />
               <div className="city-overlay"></div>
-              <div className="city-info"><div className="city-name">Pune</div><div className="city-count">Active Area</div></div>
+              <div className="city-info">
+                <div className="city-name" style={{ display: 'flex', alignItems: 'center', gap: 6 }}><MapPin size={18} /> Pune</div>
+                <div className="city-count">Active Area</div>
+              </div>
             </Link>
           </div>
         </div>

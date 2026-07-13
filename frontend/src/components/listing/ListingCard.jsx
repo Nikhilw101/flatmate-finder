@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { MapPin } from 'lucide-react';
 
 const PLACEHOLDER_IMG = 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=700&auto=format&fit=crop&q=70';
 
@@ -65,9 +66,9 @@ export default function ListingCard({ listing, actions, compatibility }) {
           <div className="card-title" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {shortTitle}
           </div>
-          <div className="card-loc">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z" stroke="#8A8A8A" strokeWidth="2"/><circle cx="12" cy="9" r="2.4" stroke="#8A8A8A" strokeWidth="2"/></svg>
-            {location}
+          <div className="card-loc" style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--text-secondary)', fontSize: 13, fontWeight: 500, marginBottom: 12 }}>
+            <MapPin size={14} style={{ flexShrink: 0 }} />
+            <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{location}</span>
           </div>
           <div className="tag-row">
             <span className="tag">{furnishingStatus}</span>

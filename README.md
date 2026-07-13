@@ -1,62 +1,133 @@
-# HomeSync
+# HomeSync — Find a Home, Find your People 🏠🤝
 
-HomeSync is a premium flatmate-finding platform that connects tenants with property owners. It features an AI-powered compatibility engine, real-time chat, in-app notifications, and a modern, responsive UI.
+HomeSync is a premium, AI-driven platform that connects verified property owners with compatible flatmates/tenants based on deep lifestyle matching. It replaces endless scrolling with an intelligent algorithm that calculates a "Fit Score" based on place, schedules, budget flexibility.
+---
 
-## Features
-- **Role-based Access**: Separate flows for Tenants, Owners, and Admins.
-- **AI Compatibility Engine**: Analyzes tenant profiles against listing details using Google Gemini to compute a compatibility score and provide natural language explanations.
-- **Real-time Chat**: WebSocket-powered live messaging between matched tenants and owners.
-- **Real-time Notifications**: Instant alerts for interests, acceptances, and messages.
-- **Email Integration**: Transactional emails powered by Brevo.
-- **Image Management**: Secure image uploads, compression, and delivery via Cloudinary.
-- **Admin Dashboard**: Live analytics and metrics tracking platform activity.
+## 🚀 Live Links
+- **Live Frontend**: [Vercel Deployment](https://homesync-rent.vercel.app/)
+- **Live Backend API**: [Render Server](https://flatmate-finder-gvy7.onrender.com)
 
-## Tech Stack
-- **Frontend**: React (Vite), React Router, Lucide Icons, Pure CSS (custom design system)
-- **Backend**: Node.js, Express, Socket.io, Google Generative AI (Gemini)
-- **Database**: MongoDB (Mongoose)
-- **Security**: JWT, bcrypt, Helmet, Express-Rate-Limit, Mongo-Sanitize, XSS-Clean
-- **Integrations**: Cloudinary (images), Brevo (email)
+---
 
-## Getting Started
+## 🔐 Default Admin Access
+If you want to view the platform from an administrator's perspective (to view total metrics, user counts, and active listings):
+- **Email**: `admin@kindred.com`
+- **Password**: `admin123`
+- **Portal Link**: `/admin/dashboard`
 
-### Prerequisites
-- Node.js (v18+)
-- MongoDB cluster (Atlas recommended)
-- Cloudinary account
-- Brevo account
-- Google Gemini API key
+---
 
-### Installation
+## 🛠️ Technology Stack
+- **Frontend**: React (Vite), React Router v6, Vanilla CSS (Custom Design System, Glassmorphism UI)
+- **Backend**: Node.js, Express.js
+- **Database**: MongoDB (Atlas)
+- **Authentication**: JWT (JSON Web Tokens) in HttpOnly cookies
+- **AI Integration**: Google Gemini API (for advanced lifestyle parsing/matching)
+- **Email Service**: Brevo API
+- **File Uploads**: Cloudinary
 
-1. **Clone the repository**
-2. **Install Backend Dependencies**
+---
+
+## ✨ Core Features
+1. **AI Fit Scoring**: The platform uses Gemini to analyze both the Owner's requirements and the Tenant's profile, generating a percentage-based "Fit Score".
+2. **Three Distinct Portals**:
+   - **Admin Dashboard**: See live metrics and manage platform health.
+   - **Owner Portal**: Post listings, manage flatmate requests, and mark rooms as filled.
+   - **Tenant Portal**: Browse AI-matched listings, send requests, and chat with owners.
+3. **Real-time Chat**: Connects owners and tenants securely before finalizing a lease.
+4. **Premium UI/UX**: Built with modern aesthetics, skeleton loaders, floating responsive grids, and strict responsive design rules.
+
+---
+
+## 💻 Local Setup Instructions
+
+### 1. Prerequisites
+- **Node.js** (v18+ recommended)
+- **MongoDB** (Local instance or Atlas Cluster)
+- A **Cloudinary** account (for image uploads)
+- A **Google Gemini** API key
+
+### 2. Backend Setup
+1. Open a terminal and navigate to the backend folder:
    ```bash
    cd backend
+   ```
+2. Install dependencies:
+   ```bash
    npm install
    ```
-3. **Install Frontend Dependencies**
+3. Create a `.env` file in the `backend/` directory and populate it:
+   ```env
+   PORT=5000
+   MONGO_URI=your_mongodb_connection_string
+   JWT_SECRET=super_secret_jwt_key
+   CLOUDINARY_CLOUD_NAME=your_cloud_name
+   CLOUDINARY_API_KEY=your_api_key
+   CLOUDINARY_API_SECRET=your_api_secret
+   FRONTEND_URL=http://localhost:3000
+   GEMINI_API_KEY=your_gemini_api_key
+   BREVO_API_KEY=your_brevo_api_key
+   BREVO_SENDER_EMAIL=your_email@domain.com
+   BREVO_SENDER_NAME=HomeSync
+   ```
+4. Start the backend development server:
+   ```bash
+   npm run dev
+   ```
+
+### 3. Frontend Setup
+1. Open a new terminal and navigate to the frontend folder:
    ```bash
    cd frontend
+   ```
+2. Install dependencies:
+   ```bash
    npm install
    ```
+3. Create a `.env` file in the `frontend/` directory:
+   ```env
+   VITE_API_URL=http://localhost:5000/api
+   ```
+4. Start the frontend development server:
+   ```bash
+   npm run dev
+   ```
 
-### Environment Variables
-Create a `.env` file in the `backend` directory based on the provided `.env.example`.
+### 4. Database Reset (Wiping Mock Data)
+If you ever want to completely wipe all users, listings, and chats (while preserving the Admin account) to start fresh, run:
+```bash
+cd backend
+npm run wipe-db
+```
 
-### Running Locally
-1. Start the backend: `cd backend && npm run dev` (Runs on port 5000)
-2. Start the frontend: `cd frontend && npm run dev` (Runs on port 3000)
+---
 
-## Production Deployment
+## 📂 Folder Structure Overview
+```text
+rent_flatmate_finder/
+│
+├── backend/
+│   ├── scripts/        # Utility scripts (e.g., wipe_db.js)
+│   ├── src/
+│   │   ├── ai/         # Gemini parsing logic
+│   │   ├── controllers/# Route logic
+│   │   ├── middlewares/# Auth & Validation checks
+│   │   ├── models/     # Mongoose Schemas
+│   │   ├── routes/     # Express route definitions
+│   │   └── utils/      # Helpers (Email, Uploads)
+│   └── package.json
+│
+└── frontend/
+    ├── public/         # Static assets (logo.png, favicon.png)
+    ├── src/
+    │   ├── assets/     # Global CSS and tokens
+    │   ├── components/ # Reusable UI components
+    │   ├── context/    # React Context (Auth)
+    │   ├── layouts/    # MainLayout & DashboardLayout
+    │   ├── pages/      # Route components (Admin, Owner, Tenant)
+    │   └── services/   # Axios API calls
+    └── package.json
+```
 
-### Backend
-The backend is ready to be deployed to Render, Railway, or Fly.io.
-- Ensure all environment variables are securely set.
-- A `render.yaml` template is provided for Render deployments.
-- The server exposes a `/health` endpoint for uptime monitoring.
-
-### Frontend
-The frontend is optimized for deployment to Vercel or Netlify.
-- Set `VITE_API_URL` to your production backend URL.
-- A `vercel.json` file is provided to handle React Router client-side routing.
+---
+**Enjoy building with HomeSync!**

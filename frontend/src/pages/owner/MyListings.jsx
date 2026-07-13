@@ -4,7 +4,7 @@ import DashboardLayout from '../../layouts/DashboardLayout';
 import listingService from '../../services/listing.service';
 import ListingCard from '../../components/listing/ListingCard';
 import Pagination from '../../components/common/Pagination';
-import LoadingSpinner from '../../components/common/LoadingSpinner';
+import SkeletonListingCard from '../../components/listing/SkeletonListingCard';
 import ErrorMessage from '../../components/common/ErrorMessage';
 import EmptyState from '../../components/common/EmptyState';
 import ConfirmModal from '../../components/common/ConfirmModal';
@@ -81,7 +81,11 @@ export default function MyListings() {
         </button>
       </div>
 
-      {loading ? <LoadingSpinner /> : error ? (
+      {loading ? (
+        <div className="listing-grid">
+          {[...Array(3)].map((_, i) => <SkeletonListingCard key={i} />)}
+        </div>
+      ) : error ? (
         <ErrorMessage message={error} onRetry={() => fetchListings()} />
       ) : listings.length === 0 ? (
         <EmptyState

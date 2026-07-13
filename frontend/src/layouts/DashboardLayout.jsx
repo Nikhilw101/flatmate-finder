@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { LayoutDashboard, Home, Plus, User, Search, LogOut, Inbox, Menu } from 'lucide-react';
 
 import NotificationBell from '../components/common/NotificationBell';
+import BottomNav from '../components/layout/BottomNav';
 
 const ownerNav = [
   { to: '/owner/dashboard', icon: <LayoutDashboard size={20} />, label: 'Dashboard' },
@@ -67,8 +68,8 @@ export default function DashboardLayout({ children }) {
         {/* Logo */}
         <div style={{ padding: '28px 24px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Link className="logo" to="/">
-            <span className="mark"></span>
-            HomeSync
+            <img src="/logo.png" alt="HomeSync Logo" className="logo-img" />
+            <span>HomeSync</span>
           </Link>
         </div>
 
@@ -142,6 +143,8 @@ export default function DashboardLayout({ children }) {
           </div>
         </div>
       </main>
+
+      <BottomNav />
     </div>
   );
 }
