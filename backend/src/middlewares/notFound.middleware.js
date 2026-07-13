@@ -1,0 +1,8 @@
+const notFoundHandler = (req, res, next) => {
+    res.status(404).json({
+        success: false,
+        message: 'API Route Not Found'
+    });
+};
+
+module.exports = { notFoundHandler };
