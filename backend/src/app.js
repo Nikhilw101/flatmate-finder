@@ -11,6 +11,9 @@ const env = require('./config/env');
 
 const app = express();
 
+// Trust reverse proxy (required for Render/Heroku to get real client IPs for rate limiting)
+app.set('trust proxy', 1);
+
 // Middlewares
 app.use(helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" }
