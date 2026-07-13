@@ -1,0 +1,166 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import DashboardLayout from '../../layouts/DashboardLayout';
+import listingService from '../../services/listing.service';
+import ImageUploader from '../../components/listing/ImageUploader';
+import { ROOM_TYPES, FURNISHING_STATUS } from '../../config/constants';
+
+const INITIAL = {
+  location: '', rent: '', availableFrom: '', roomType: '',
+  furnishingStatus: '', description: '',
+};
+
+function Field({ label, error, children }) {
+  return (
+    <div className="form-group">
+      <label className="form-label">{label}</label>
+      {children}
+      {error && <div className="form-error">{error}</div>}
+    </div>
+  );
+}
+
+export default function CreateListing() {
+  const navigate = useNavigate();
+  const [form, setForm] = useState(INITIAL);
+  const [images, setImages] = useState([]); // File[]
+  const [errors, setErrors] = useState({});
+  const [submitting, setSubmitting] = useState(false);
+  const [apiError, setApiError] = useState(null);
+
+  const handleChange = (key, val) => {
+    setForm((p) => ({ ...p, [key]: val }));
+    if (errors[key]) setErrors((p) => ({ ...p, [key]: null }));
+  };
+
+  const validate = () => {
+    const e = {};
+    if (!form.location.trim() || form.location.length < 2) e.location = 'Location must be at least 2 characters.';
+    if (!form.rent || isNaN(form.rent) || Number(form.rent) <= 0) e.rent = 'Rent must be a positive number.';
+    if (!form.availableFrom) e.availableFrom = 'Please select an available date.';
+    if (!form.roomType) e.roomType = 'Please select a room type.';
+    if (!form.furnishingStatus) e.furnishingStatus = 'Please select furnishing status.';
+    if (form.description && form.description.length > 1000) e.description = 'Description cannot exceed 1000 characters.';
+    return e;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const errs = validate();
+    if (Object.keys(errs).length) { setErrors(errs); return; }
+
+    const fd = new FormData();
+    fd.append('location', form.location.trim());
+    fd.append('rent', form.rent);
+    fd.append('availableFrom', form.availableFrom);
+    fd.append('roomType', form.roomType);
+    fd.append('furnishingStatus', form.furnishingStatus);
+    if (form.description) fd.append('description', form.description);
+    images.forEach((f) => fd.append('images', f));
+
+    try {
+      setSubmitting(true);
+      setApiError(null);
+      const res = await listingService.create(fd);
+      if (res.success) navigate('/owner/listings');
+    } catch (err) {
+      setApiError(err.message || 'Failed to create listing.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <DashboardLayout>
+      <div style={{ maxWidth: 680, margin: '0 auto' }}>
+        <div style={{ marginBottom: 32 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--brand)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 6 }}>New Listing</div>
+          <h1 style={{ fontSize: 28, fontWeight: 700, letterSpacing: '-0.02em' }}>Create a Room Listing</h1>
+        </div>
+
+        {apiError && <div className="alert alert-error">{apiError}</div>}
+
+        <div className="dash-card" style={{ padding: '36px 40px' }}>
+          <form onSubmit={handleSubmit} noValidate>
+            <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 20, paddingBottom: 12, borderBottom: '1px solid var(--divider)' }}>Basic Info</h3>
+            
+            <Field label="Location *" error={errors.location}>
+              <input
+                className="form-input"
+                type="text"
+                placeholder="e.g. Koramangala, Bengaluru"
+                value={form.location}
+                onChange={(e) => handleChange('location', e.target.value)}
+              />
+            </Field>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+              <Field label="Monthly Rent (₹) *" error={errors.rent}>
+                <input
+                  className="form-input"
+                  type="number"
+                  placeholder="e.g. 18000"
+                  min="1"
+                  value={form.rent}
+                  onChange={(e) => handleChange('rent', e.target.value)}
+                />
+              </Field>
+              <Field label="Available From *" error={errors.availableFrom}>
+                <input
+                  className="form-input"
+                  type="date"
+                  value={form.availableFrom}
+                  onChange={(e) => handleChange('availableFrom', e.target.value)}
+                />
+              </Field>
+            </div>
+
+            <h3 style={{ fontSize: 18, fontWeight: 700, marginTop: 32, marginBottom: 20, paddingBottom: 12, borderBottom: '1px solid var(--divider)' }}>Amenities & Details</h3>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+              <Field label="Room Type *" error={errors.roomType}>
+                <select className="form-input" value={form.roomType} onChange={(e) => handleChange('roomType', e.target.value)}>
+                  <option value="">Select type…</option>
+                  {ROOM_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </Field>
+              <Field label="Furnishing Status *" error={errors.furnishingStatus}>
+                <select className="form-input" value={form.furnishingStatus} onChange={(e) => handleChange('furnishingStatus', e.target.value)}>
+                  <option value="">Select status…</option>
+                  {FURNISHING_STATUS.map((f) => <option key={f} value={f}>{f}</option>)}
+                </select>
+              </Field>
+            </div>
+
+            <Field label="Description (optional)" error={errors.description}>
+              <textarea
+                className="form-input"
+                style={{ resize: 'vertical', minHeight: 100 }}
+                placeholder="Describe the room, amenities, house rules…"
+                maxLength={1000}
+                value={form.description}
+                onChange={(e) => handleChange('description', e.target.value)}
+              />
+              <div style={{ textAlign: 'right', fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>{form.description.length}/1000</div>
+            </Field>
+
+            <h3 style={{ fontSize: 18, fontWeight: 700, marginTop: 32, marginBottom: 20, paddingBottom: 12, borderBottom: '1px solid var(--divider)' }}>Media</h3>
+
+            <Field label="Photos (up to 5)">
+              <ImageUploader value={images} onChange={setImages} />
+            </Field>
+
+            <div style={{ display: 'flex', gap: 16, marginTop: 40 }}>
+              <button type="button" className="btn btn-outline" style={{ flex: 1, padding: 15, borderRadius: 14 }} onClick={() => navigate('/owner/listings')}>
+                Cancel
+              </button>
+              <button type="submit" disabled={submitting} className="btn-submit" style={{ flex: 2, margin: 0 }}>
+                {submitting ? 'Creating…' : 'Create Listing'}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </DashboardLayout>
+  );
+}
