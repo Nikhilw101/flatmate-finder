@@ -13,6 +13,7 @@ export const FURNISHING_STATUS = [
 ];
 
 export const SORT_OPTIONS = [
+  { value: 'fit_score', label: 'Fit Score (Best Match)' },
   { value: 'newest', label: 'Newest first' },
   { value: 'oldest', label: 'Oldest first' },
   { value: 'rent_asc', label: 'Rent: Low → High' },

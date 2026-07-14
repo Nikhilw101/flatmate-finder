@@ -27,9 +27,9 @@ const computeRuleScore = (listing, profile) => {
     const listingCity = (listing.location || '').trim().toLowerCase();
     const preferredCity = (profile.preferredLocation || '').trim().toLowerCase();
 
-    if (listingCity && preferredCity && listingCity === preferredCity) {
+    if (listingCity && preferredCity && listingCity.includes(preferredCity)) {
         score += 50;
-        reasons.push('location matches exactly');
+        reasons.push('location matches preferred city');
     } else {
         reasons.push('location does not match preferred city');
     }

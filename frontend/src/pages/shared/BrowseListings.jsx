@@ -13,7 +13,7 @@ import EmptyState from '../../components/common/EmptyState';
 import { DEFAULT_PAGE_LIMIT } from '../../config/constants';
 import { Search } from 'lucide-react';
 
-const INITIAL_FILTERS = { location: '', minRent: '', maxRent: '', roomType: '', furnishingStatus: '', sort: 'newest', page: 1 };
+const INITIAL_FILTERS = { location: '', minRent: '', maxRent: '', roomType: '', furnishingStatus: '', sort: 'fit_score', page: 1 };
 
 export default function BrowseListings({ hideLayout = false }) {
   const { user } = useAuth();
@@ -51,7 +51,20 @@ export default function BrowseListings({ hideLayout = false }) {
           if (filters.roomType) filtered = filtered.filter(l => l.roomType === filters.roomType);
           if (filters.furnishingStatus) filtered = filtered.filter(l => l.furnishingStatus === filters.furnishingStatus);
           
-          // Pagination logic (frontend side since backend returns all for /browse)
+          if (filters.sort === 'newest') {
+             filtered.sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+          } else if (filters.sort === 'oldest') {
+             filtered.sort((a,b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+          } else if (filters.sort === 'rent_asc') {
+             filtered.sort((a,b) => a.rent - b.rent);
+          } else if (filters.sort === 'rent_desc') {
+             filtered.sort((a,b) => b.rent - a.rent);
+          } else {
+             // fit_score
+             filtered.sort((a,b) => (b.compatibility?.score || 0) - (a.compatibility?.score || 0));
+          }
+          
+          // Pagination logic
           const totalPages = Math.ceil(filtered.length / DEFAULT_PAGE_LIMIT) || 1;
           const page = filters.page || 1;
           const paginated = filtered.slice((page - 1) * DEFAULT_PAGE_LIMIT, page * DEFAULT_PAGE_LIMIT);

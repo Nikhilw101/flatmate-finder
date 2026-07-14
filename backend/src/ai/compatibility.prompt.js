@@ -45,8 +45,8 @@ BUDGET MATCH (max 40 points):
   - Rent is more than 20% above the maximum budget → 0 points
 
 LOCATION MATCH (max 50 points):
-  - Tenant's preferred location exactly matches the listing city (case-insensitive) → 50 points
-  - Locations are different cities → 0 points
+  - Tenant's preferred location matches or is part of the listing location (e.g. preference 'Pune' matches listing 'Hinjewadi, Pune') → 50 points
+  - Locations are completely different cities → 0 points
 
 MOVE-IN DATE COMPATIBILITY (max 10 points):
   - Listing available within 7 days of tenant's move-in date  → 10 points
