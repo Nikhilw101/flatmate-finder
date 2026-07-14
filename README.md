@@ -39,6 +39,18 @@ If you want to view the platform from an administrator's perspective (to view to
 
 ---
 
+## 🎯 How the "Fit Score" Works
+The "Fit Score" is computed dynamically out of 100 points to ensure tenants only see rooms that truly make sense for them.
+
+The weights are heavily biased toward location to ensure practicality:
+- **Location (70 Points):** If the tenant's preferred city matches or is included in the listing's location, they receive 70 points. If the cities are completely different, they receive 0 points.
+- **Budget (20 Points):** If the listing's rent is strictly within the tenant's min/max budget, they receive 20 points. If the rent is over the budget but within a 20% flexibility range, they receive 10 points. Otherwise, 0 points.
+- **Move-in Date (10 Points):** The closer the listing's availability date is to the tenant's preferred move-in date, the more points they receive (10 points for ≤ 7 days, 6 points for ≤ 30 days, 2 points for ≤ 60 days).
+
+*Note: The platform uses the Gemini AI to assess this criteria, but smoothly falls back to a deterministic rule-engine parser if the AI is unavailable or rate-limited.*
+
+---
+
 ## 💻 Local Setup Instructions
 
 ### 1. Prerequisites

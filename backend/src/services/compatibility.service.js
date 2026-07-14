@@ -11,8 +11,8 @@ const { getAICompatibilityScore } = require('./ai.service');
  * No side effects, no DB calls, no async.
  *
  * Scoring breakdown (total: 100):
- *   Location : 50 pts  — exact city match (case-insensitive, trimmed)
- *   Budget   : 40 pts  — within range = 40, within 20% over max = 20, else 0
+ *   Location : 70 pts  — exact or partial city match (case-insensitive)
+ *   Budget   : 20 pts  — within range = 20, within 20% over max = 10, else 0
  *   Date     : 10 pts  — ≤7d = 10, ≤30d = 6, ≤60d = 2, else 0
  *
  * @param {Object} listing - Listing document
@@ -23,27 +23,27 @@ const computeRuleScore = (listing, profile) => {
     const reasons = [];
     let score = 0;
 
-    // ── Location (50pts) ──────────────────────────────────────────────────────
+    // ── Location (70pts) ──────────────────────────────────────────────────────
     const listingCity = (listing.location || '').trim().toLowerCase();
     const preferredCity = (profile.preferredLocation || '').trim().toLowerCase();
 
     if (listingCity && preferredCity && listingCity.includes(preferredCity)) {
-        score += 50;
+        score += 70;
         reasons.push('location matches preferred city');
     } else {
         reasons.push('location does not match preferred city');
     }
 
-    // ── Budget (40pts) ────────────────────────────────────────────────────────
+    // ── Budget (20pts) ────────────────────────────────────────────────────────
     const rent = listing.rent || 0;
     const min = profile.minBudget || 0;
     const max = profile.maxBudget || 0;
 
     if (rent >= min && rent <= max) {
-        score += 40;
+        score += 20;
         reasons.push('rent is within budget range');
     } else if (rent > max && rent <= max * 1.2) {
-        score += 20;
+        score += 10;
         reasons.push('rent is slightly above the maximum budget');
     } else {
         reasons.push('rent is outside budget range');

@@ -39,13 +39,13 @@ Description        : ${listing.description || 'None provided'}
 === SCORING RULES ===
 Score out of 100. Weight factors exactly as follows:
 
-BUDGET MATCH (max 40 points):
-  - Rent is within tenant's min-max budget range  → 40 points
-  - Rent is 1–20% above the maximum budget        → 20 points
+BUDGET MATCH (max 20 points):
+  - Rent is within tenant's min-max budget range  → 20 points
+  - Rent is 1–20% above the maximum budget        → 10 points
   - Rent is more than 20% above the maximum budget → 0 points
 
-LOCATION MATCH (max 50 points):
-  - Tenant's preferred location matches or is part of the listing location (e.g. preference 'Pune' matches listing 'Hinjewadi, Pune') → 50 points
+LOCATION MATCH (max 70 points):
+  - Tenant's preferred location matches or is part of the listing location (e.g. preference 'Pune' matches listing 'Hinjewadi, Pune') → 70 points
   - Locations are completely different cities → 0 points
 
 MOVE-IN DATE COMPATIBILITY (max 10 points):
