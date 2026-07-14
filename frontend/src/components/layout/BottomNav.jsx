@@ -15,7 +15,7 @@ export default function BottomNav() {
 
   // Auth specific links
   if (user) {
-    links.push({ to: '/messages', icon: <MessageSquare size={22} />, label: 'Messages' });
+    links.push({ to: '/chats', icon: <MessageSquare size={22} />, label: 'Messages' });
     links.push({ to: `/${user.role.toLowerCase()}/dashboard`, icon: <User size={22} />, label: 'Profile' });
   } else {
     links.push({ to: '/login', icon: <User size={22} />, label: 'Sign in' });

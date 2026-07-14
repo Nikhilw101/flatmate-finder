@@ -2,12 +2,17 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import listingService from '../services/listing.service';
 import ListingCard from '../components/listing/ListingCard';
+import { useAuth } from '../hooks/useAuth';
+import compatibilityService from '../services/compatibility.service';
+import SkeletonListingCard from '../components/listing/SkeletonListingCard';
 import { MapPin } from 'lucide-react';
 
 export default function Home() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [featuredListings, setFeaturedListings] = useState([]);
   const [totalListings, setTotalListings] = useState(0);
+  const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useState({ location: '', minRent: '', maxRent: '', availableFrom: '' });
 
   useEffect(() => {
@@ -25,19 +30,34 @@ export default function Home() {
     // Fetch featured listings
     const fetchFeatured = async () => {
       try {
-        const res = await listingService.getAll({ limit: 3, sort: 'newest' });
-        if (res.success) {
-          setFeaturedListings(res.data.listings);
-          setTotalListings(res.data.pagination?.total || 12400); // Fallback to reference design number
+        setLoading(true);
+        if (user?.role === 'TENANT') {
+          const res = await compatibilityService.getBrowseListings();
+          if (res.success) {
+            const mapped = res.data.slice(0, 3).map(item => ({
+              ...item.listing,
+              compatibility: { score: item.score, explanation: item.explanation }
+            }));
+            setFeaturedListings(mapped);
+            setTotalListings(res.data.length || 12400);
+          }
+        } else {
+          const res = await listingService.getAll({ limit: 3, sort: 'newest' });
+          if (res.success) {
+            setFeaturedListings(res.data.listings);
+            setTotalListings(res.data.pagination?.total || 12400); // Fallback to reference design number
+          }
         }
       } catch (err) {
         console.error('Failed to fetch featured listings:', err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchFeatured();
     
     return () => observer.disconnect();
-  }, []);
+  }, [user]);
 
   const handleSearch = () => {
     const q = new URLSearchParams();
@@ -144,9 +164,17 @@ export default function Home() {
           </div>
 
           <div className="listing-grid">
-            {featuredListings.map(listing => (
-              <ListingCard key={listing._id} listing={listing} />
-            ))}
+            {loading ? (
+              <>
+                <SkeletonListingCard />
+                <SkeletonListingCard />
+                <SkeletonListingCard />
+              </>
+            ) : (
+              featuredListings.map(listing => (
+                <ListingCard key={listing._id} listing={listing} compatibility={listing.compatibility} />
+              ))
+            )}
           </div>
           
           <div className="reveal" style={{ marginTop: 40, textAlign: 'center' }}>

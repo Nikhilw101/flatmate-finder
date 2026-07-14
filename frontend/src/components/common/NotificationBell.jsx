@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Bell } from 'lucide-react';
 import notificationService from '../../services/notification.service';
+import socketService from '../../services/socket.service';
 
 export default function NotificationBell() {
   const [unreadCount, setUnreadCount] = useState(0);
@@ -33,7 +34,22 @@ export default function NotificationBell() {
 
   useEffect(() => {
     fetchUnreadCount();
-    // Poll every 30 seconds for new notifications (since we don't have socket events for notifications in the plan yet, polling is safe and common for bells)
+    
+    const socket = socketService.connect();
+    if (socket) {
+      const handleNewNotification = (notification) => {
+        setUnreadCount(prev => prev + 1);
+        setNotifications(prev => [notification, ...prev].slice(0, 5));
+      };
+      
+      socket.on('notification:new', handleNewNotification);
+      
+      return () => {
+        socket.off('notification:new', handleNewNotification);
+      };
+    }
+    
+    // Fallback polling for robustness
     const interval = setInterval(fetchUnreadCount, 30000);
     return () => clearInterval(interval);
   }, []);

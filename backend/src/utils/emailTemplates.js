@@ -104,7 +104,7 @@ const highCompatibilityInterest = ({ ownerName, tenantName, score, location, ren
         <p style="margin:0 0 24px;color:#374151;font-size:14px;">
             Login to review the interest request and decide to accept or decline.
         </p>
-        <a href="http://localhost:3000/dashboard/interests" 
+        <a href="http://localhost:3000/owner/requests" 
            style="display:inline-block;background:#4f46e5;color:#ffffff;padding:12px 28px;
                   border-radius:6px;text-decoration:none;font-size:15px;font-weight:600;">
             Review Request →
@@ -136,7 +136,7 @@ const interestAccepted = ({ tenantName, ownerName, location }) => ({
         <p style="margin:0 0 24px;color:#374151;font-size:14px;">
             Open the chat section to connect with your potential flatmate and discuss the next steps.
         </p>
-        <a href="http://localhost:3000/dashboard/chats"
+        <a href="http://localhost:3000/chats"
            style="display:inline-block;background:#059669;color:#ffffff;padding:12px 28px;
                   border-radius:6px;text-decoration:none;font-size:15px;font-weight:600;">
             Open Chat →
