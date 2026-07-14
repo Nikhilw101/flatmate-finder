@@ -11,8 +11,9 @@ const { getAICompatibilityScore } = require('./ai.service');
  * No side effects, no DB calls, no async.
  *
  * Scoring breakdown (total: 100):
- *   Location : 70 pts  — exact or partial city match (case-insensitive)
+ *   Location : 60 pts  — exact or partial city match (case-insensitive)
  *   Budget   : 20 pts  — within range = 20, within 20% over max = 10, else 0
+ *   Lifestyle: 10 pts  — Room type match = 5, Furnishing match = 5
  *   Date     : 10 pts  — ≤7d = 10, ≤30d = 6, ≤60d = 2, else 0
  *
  * @param {Object} listing - Listing document
@@ -23,12 +24,12 @@ const computeRuleScore = (listing, profile) => {
     const reasons = [];
     let score = 0;
 
-    // ── Location (70pts) ──────────────────────────────────────────────────────
+    // ── Location (60pts) ──────────────────────────────────────────────────────
     const listingCity = (listing.location || '').trim().toLowerCase();
     const preferredCity = (profile.preferredLocation || '').trim().toLowerCase();
 
     if (listingCity && preferredCity && listingCity.includes(preferredCity)) {
-        score += 70;
+        score += 60;
         reasons.push('location matches preferred city');
     } else {
         reasons.push('location does not match preferred city');
@@ -70,6 +71,16 @@ const computeRuleScore = (listing, profile) => {
         }
     } else {
         reasons.push('move-in date not available for comparison');
+    }
+
+    // ── Lifestyle (10pts) ──────────────────────────────────────────────────────
+    const prefRoom = profile.preferredRoomType || 'Any';
+    const prefFurn = profile.preferredFurnishing || 'Any';
+    if (prefRoom === 'Any' || prefRoom === listing.roomType) {
+        score += 5;
+    }
+    if (prefFurn === 'Any' || prefFurn === listing.furnishingStatus) {
+        score += 5;
     }
 
     const explanation =

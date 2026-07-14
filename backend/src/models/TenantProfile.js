@@ -25,6 +25,14 @@ const tenantProfileSchema = new mongoose.Schema(
         moveInDate: {
             type: Date,
             required: [true, 'Move-in date is required']
+        },
+        preferredRoomType: {
+            type: String,
+            default: 'Any'
+        },
+        preferredFurnishing: {
+            type: String,
+            default: 'Any'
         }
     },
     {

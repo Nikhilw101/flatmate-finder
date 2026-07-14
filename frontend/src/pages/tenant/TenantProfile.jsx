@@ -3,6 +3,7 @@ import DashboardLayout from '../../layouts/DashboardLayout';
 import tenantService from '../../services/tenant.service';
 import { useAuth } from '../../hooks/useAuth';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+import { ROOM_TYPES, FURNISHING_STATUS } from '../../config/constants';
 
 const inputStyle = {
   width: '100%', padding: '13px 16px', border: '1.5px solid var(--border)',
@@ -21,7 +22,7 @@ function Field({ label, error, children }) {
   );
 }
 
-const INITIAL = { preferredLocation: '', minBudget: '', maxBudget: '', moveInDate: '' };
+const INITIAL = { preferredLocation: '', minBudget: '', maxBudget: '', moveInDate: '', preferredRoomType: 'Any', preferredFurnishing: 'Any' };
 
 export default function TenantProfile() {
   const { user, login } = useAuth();
@@ -46,6 +47,8 @@ export default function TenantProfile() {
             minBudget: p.minBudget ?? '',
             maxBudget: p.maxBudget ?? '',
             moveInDate: p.moveInDate ? p.moveInDate.split('T')[0] : '',
+            preferredRoomType: p.preferredRoomType || 'Any',
+            preferredFurnishing: p.preferredFurnishing || 'Any',
           });
           setIsExisting(true);
         }
@@ -82,6 +85,8 @@ export default function TenantProfile() {
         minBudget: Number(form.minBudget),
         maxBudget: Number(form.maxBudget),
         moveInDate: form.moveInDate,
+        preferredRoomType: form.preferredRoomType,
+        preferredFurnishing: form.preferredFurnishing,
       });
       if (res.success) {
         setIsExisting(true);
@@ -181,14 +186,30 @@ export default function TenantProfile() {
               </Field>
             </div>
 
-            <Field label="Preferred Move-in Date *" error={errors.moveInDate}>
-              <input
-                style={inputStyle}
-                type="date"
-                value={form.moveInDate}
-                onChange={(e) => handleChange('moveInDate', e.target.value)}
-              />
-            </Field>
+              <Field label="Preferred Move-in Date *" error={errors.moveInDate}>
+                <input
+                  style={inputStyle}
+                  type="date"
+                  value={form.moveInDate}
+                  onChange={(e) => handleChange('moveInDate', e.target.value)}
+                />
+              </Field>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+              <Field label="Preferred Room Type">
+                <select style={inputStyle} value={form.preferredRoomType} onChange={(e) => handleChange('preferredRoomType', e.target.value)}>
+                  <option value="Any">Any</option>
+                  {ROOM_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </Field>
+              <Field label="Preferred Furnishing">
+                <select style={inputStyle} value={form.preferredFurnishing} onChange={(e) => handleChange('preferredFurnishing', e.target.value)}>
+                  <option value="Any">Any</option>
+                  {FURNISHING_STATUS.map(f => <option key={f} value={f}>{f}</option>)}
+                </select>
+              </Field>
+            </div>
 
             <button type="submit" disabled={submitting} className="btn btn-primary" style={{ width: '100%', marginTop: 8 }}>
               {submitting ? 'Saving…' : isExisting ? 'Update Preferences' : 'Save Preferences'}

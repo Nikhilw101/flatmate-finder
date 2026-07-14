@@ -27,6 +27,8 @@ Preferred Location : ${profile.preferredLocation}
 Minimum Budget     : ₹${profile.minBudget}
 Maximum Budget     : ₹${profile.maxBudget}
 Move-in Date       : ${tenantMoveIn}
+Preferred Room     : ${profile.preferredRoomType || 'Any'}
+Preferred Furnishing: ${profile.preferredFurnishing || 'Any'}
 
 === ROOM LISTING ===
 Location           : ${listing.location}
@@ -39,14 +41,18 @@ Description        : ${listing.description || 'None provided'}
 === SCORING RULES ===
 Score out of 100. Weight factors exactly as follows:
 
+LOCATION MATCH (max 60 points):
+  - Tenant's preferred location matches or is part of the listing location (e.g. preference 'Pune' matches listing 'Hinjewadi, Pune') → 60 points
+  - Locations are completely different cities → 0 points
+
 BUDGET MATCH (max 20 points):
   - Rent is within tenant's min-max budget range  → 20 points
   - Rent is 1–20% above the maximum budget        → 10 points
   - Rent is more than 20% above the maximum budget → 0 points
 
-LOCATION MATCH (max 70 points):
-  - Tenant's preferred location matches or is part of the listing location (e.g. preference 'Pune' matches listing 'Hinjewadi, Pune') → 70 points
-  - Locations are completely different cities → 0 points
+ROOM & LIFESTYLE MATCH (max 10 points):
+  - Room Type matches preferred or preference is 'Any' (5 pts)
+  - Furnishing matches preferred or preference is 'Any' (5 pts)
 
 MOVE-IN DATE COMPATIBILITY (max 10 points):
   - Listing available within 7 days of tenant's move-in date  → 10 points
