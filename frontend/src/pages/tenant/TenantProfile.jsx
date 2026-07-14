@@ -194,7 +194,6 @@ export default function TenantProfile() {
                   onChange={(e) => handleChange('moveInDate', e.target.value)}
                 />
               </Field>
-            </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
               <Field label="Preferred Room Type">

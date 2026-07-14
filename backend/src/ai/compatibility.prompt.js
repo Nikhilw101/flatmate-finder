@@ -41,23 +41,30 @@ Description        : ${listing.description || 'None provided'}
 === SCORING RULES ===
 Score out of 100. Weight factors exactly as follows:
 
-LOCATION MATCH (max 60 points):
-  - Tenant's preferred location matches or is part of the listing location (e.g. preference 'Pune' matches listing 'Hinjewadi, Pune') → 60 points
-  - Locations are completely different cities → 0 points
+CRITICAL LOCATION MISMATCH RULE:
+If the tenant's preferred location and the listing's location are completely different cities (e.g., Pune vs Mumbai):
+- The score MUST be exactly 0.
+- The explanation MUST be exactly: "Location mismatch. This property is in ${listing.location}. Your preferred city is ${profile.preferredLocation}."
+- Do not add any other text to the explanation. Do not calculate other factors.
 
-BUDGET MATCH (max 20 points):
-  - Rent is within tenant's min-max budget range  → 20 points
-  - Rent is 1–20% above the maximum budget        → 10 points
+If locations match or are similar, calculate the score using these weights:
+
+BUDGET MATCH (max 35 points):
+  - Rent is within tenant's min-max budget range  → 35 points
+  - Rent is 1–20% above the maximum budget        → 17 points
   - Rent is more than 20% above the maximum budget → 0 points
 
-ROOM & LIFESTYLE MATCH (max 10 points):
-  - Room Type matches preferred or preference is 'Any' (5 pts)
-  - Furnishing matches preferred or preference is 'Any' (5 pts)
+LOCATION MATCH (max 30 points):
+  - Tenant's preferred location matches or is part of the listing location (e.g. preference 'Pune' matches listing 'Hinjewadi, Pune') → 30 points
 
-MOVE-IN DATE COMPATIBILITY (max 10 points):
-  - Listing available within 7 days of tenant's move-in date  → 10 points
-  - Listing available within 30 days of tenant's move-in date → 6 points
-  - Listing available within 60 days of tenant's move-in date → 2 points
+ROOM & LIFESTYLE MATCH (max 20 points):
+  - Room Type matches preferred or preference is 'Any' (10 pts)
+  - Furnishing matches preferred or preference is 'Any' (10 pts)
+
+MOVE-IN DATE COMPATIBILITY (max 15 points):
+  - Listing available within 7 days of tenant's move-in date  → 15 points
+  - Listing available within 30 days of tenant's move-in date → 7 points
+  - Listing available within 60 days of tenant's move-in date → 3 points
   - More than 60 days difference                               → 0 points
 
 === OUTPUT FORMAT ===

@@ -21,36 +21,60 @@ const { getAICompatibilityScore } = require('./ai.service');
  * @returns {{ score: number, explanation: string }}
  */
 const computeRuleScore = (listing, profile) => {
-    const reasons = [];
     let score = 0;
+    const reasons = [];
 
-    // ── Location (60pts) ──────────────────────────────────────────────────────
     const listingCity = (listing.location || '').trim().toLowerCase();
     const preferredCity = (profile.preferredLocation || '').trim().toLowerCase();
 
-    if (listingCity && preferredCity && listingCity.includes(preferredCity)) {
-        score += 60;
-        reasons.push('location matches preferred city');
-    } else {
-        reasons.push('location does not match preferred city');
+    // ── Location Mismatch Rule ────────────────────────────────────────────────
+    if (listingCity && preferredCity && !listingCity.includes(preferredCity) && !preferredCity.includes(listingCity)) {
+        return {
+            score: 0,
+            explanation: `Location mismatch. This property is in ${listing.location}. Your preferred city is ${profile.preferredLocation}.`
+        };
     }
 
-    // ── Budget (20pts) ────────────────────────────────────────────────────────
+    // ── Location (30pts) ──────────────────────────────────────────────────────
+    if (listingCity && preferredCity) {
+        score += 30;
+        reasons.push('location matches preferred city');
+    }
+
+    // ── Budget (35pts) ────────────────────────────────────────────────────────
     const rent = listing.rent || 0;
     const min = profile.minBudget || 0;
     const max = profile.maxBudget || 0;
 
     if (rent >= min && rent <= max) {
-        score += 20;
+        score += 35;
         reasons.push('rent is within budget range');
     } else if (rent > max && rent <= max * 1.2) {
-        score += 10;
+        score += 17;
         reasons.push('rent is slightly above the maximum budget');
+    } else if (rent < min && rent >= min * 0.8) {
+        score += 17;
+        reasons.push('rent is slightly below the minimum budget');
     } else {
         reasons.push('rent is outside budget range');
     }
 
-    // ── Move-in Date (10pts) ──────────────────────────────────────────────────
+    // ── Lifestyle (20pts) ──────────────────────────────────────────────────────
+    const prefRoom = profile.preferredRoomType || 'Any';
+    const prefFurn = profile.preferredFurnishing || 'Any';
+    let prefScore = 0;
+    if (prefRoom === 'Any' || prefRoom === listing.roomType) {
+        prefScore += 10;
+    }
+    if (prefFurn === 'Any' || prefFurn === listing.furnishingStatus) {
+        prefScore += 10;
+    }
+    score += prefScore;
+    if (prefScore === 20) reasons.push('lifestyle preferences match perfectly');
+    else if (prefScore === 10) reasons.push('lifestyle preferences match partially');
+    else reasons.push('lifestyle preferences do not match');
+
+    // ── Move-in Date (15pts) ──────────────────────────────────────────────────
     if (listing.availableFrom && profile.moveInDate) {
         const diffMs = Math.abs(
             new Date(listing.availableFrom).getTime() - new Date(profile.moveInDate).getTime()
@@ -58,29 +82,19 @@ const computeRuleScore = (listing, profile) => {
         const diffDays = diffMs / (1000 * 60 * 60 * 24);
 
         if (diffDays <= 7) {
-            score += 10;
+            score += 15;
             reasons.push('move-in dates align closely');
         } else if (diffDays <= 30) {
-            score += 6;
+            score += 7;
             reasons.push('move-in dates are within a month');
         } else if (diffDays <= 60) {
-            score += 2;
+            score += 3;
             reasons.push('move-in dates differ by up to two months');
         } else {
             reasons.push('move-in dates are far apart');
         }
     } else {
         reasons.push('move-in date not available for comparison');
-    }
-
-    // ── Lifestyle (10pts) ──────────────────────────────────────────────────────
-    const prefRoom = profile.preferredRoomType || 'Any';
-    const prefFurn = profile.preferredFurnishing || 'Any';
-    if (prefRoom === 'Any' || prefRoom === listing.roomType) {
-        score += 5;
-    }
-    if (prefFurn === 'Any' || prefFurn === listing.furnishingStatus) {
-        score += 5;
     }
 
     const explanation =

@@ -43,10 +43,12 @@ If you want to view the platform from an administrator's perspective (to view to
 The "Fit Score" is computed dynamically out of 100 points to ensure tenants only see rooms that truly make sense for them.
 
 The weights are highly dynamic and biased toward practical lifestyle matching:
-- **Location (60 Points):** If the tenant's preferred city matches or is included in the listing's location, they receive 60 points. If the cities are completely different, they receive 0 points.
-- **Budget (20 Points):** If the listing's rent is strictly within the tenant's min/max budget, they receive 20 points. If the rent is over the budget but within a 20% flexibility range, they receive 10 points.
-- **Room & Lifestyle (10 Points):** The AI evaluates if the room type and furnishing status match the tenant's exact preferences. (5 points each).
-- **Move-in Date (10 Points):** The closer the listing's availability date is to the tenant's preferred move-in date, the more points they receive (10 points for ≤ 7 days, 6 points for ≤ 30 days).
+- **Location (30 Points):** If the tenant's preferred city matches or is included in the listing's location, they receive 30 points. 
+- **Budget (35 Points):** If the listing's rent is strictly within the tenant's min/max budget, they receive 35 points. If the rent is outside the budget but within a 20% flexibility range, they receive 17 points.
+- **Room & Lifestyle (20 Points):** The AI evaluates if the room type and furnishing status match the tenant's exact preferences. (10 points each).
+- **Move-in Date (15 Points):** The closer the listing's availability date is to the tenant's preferred move-in date, the more points they receive (15 points for ≤ 7 days, 7 points for ≤ 30 days, 3 points for ≤ 60 days).
+
+*Critical Rule - Location Mismatch:* If the property is in a completely different city than the tenant's preferred location (e.g. Pune vs Mumbai), the platform instantly assigns a 0% Fit Score and explains: "Location mismatch. This property is in [City]. Your preferred city is [City]." rather than showing a low percentage.
 
 *Note: The platform uses the Gemini AI to assess this criteria, but smoothly falls back to a deterministic rule-engine parser if the AI is unavailable or rate-limited.*
 
