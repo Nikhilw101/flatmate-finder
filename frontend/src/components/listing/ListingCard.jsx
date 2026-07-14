@@ -46,9 +46,15 @@ export default function ListingCard({ listing, actions, compatibility }) {
             </div>
           )}
           {!isFilled && compatibility && (
-            <div className="fit-badge">
-              <span className="dot"></span>{compatibility.score}% Fit
-            </div>
+            compatibility.score === 0 && compatibility.explanation && compatibility.explanation.includes('Location mismatch') ? (
+              <div className="fit-badge" style={{ background: 'rgba(239,68,68,0.9)', padding: '6px 12px' }}>
+                Location Mismatch
+              </div>
+            ) : (
+              <div className="fit-badge">
+                <span className="dot"></span>{compatibility.score}% Fit
+              </div>
+            )
           )}
           {isOwner && !isFilled && !compatibility && (
             <div className="fit-badge" style={{ background: 'var(--brand)' }}>
